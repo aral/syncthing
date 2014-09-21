@@ -960,11 +960,16 @@ func (m *Model) clusterConfig(node protocol.NodeID) protocol.ClusterConfigMessag
 			// NodeID is a value type, but with an underlying array. Copy it
 			// so we don't grab aliases to the same array later on in node[:]
 			node := node
-			// TODO: Set read only bit when relevant
-			cr.Nodes = append(cr.Nodes, protocol.Node{
+			cn := protocol.Node{
 				ID:    node[:],
 				Flags: protocol.FlagShareTrusted,
-			})
+			}
+			nodeCfg := m.cfg.GetNodeConfiguration(node)
+			if nodeCfg.Introducer {
+				cn.Flags |= protocol.FlagIntroducer
+			}
+			// TODO: Set read only bit when relevant
+			cr.Nodes = append(cr.Nodes, cn)
 		}
 		cm.Repositories = append(cm.Repositories, cr)
 	}

@@ -101,6 +101,7 @@ type NodeConfiguration struct {
 	Addresses   []string        `xml:"address,omitempty"`
 	Compression bool            `xml:"compression,attr"`
 	CertName    string          `xml:"certName,attr,omitempty"`
+	Introducer  bool            `xml:"introducer,attr"`
 }
 
 type RepositoryNodeConfiguration struct {
