@@ -453,6 +453,21 @@ func (m *Model) ClusterConfig(nodeID protocol.NodeID, config protocol.ClusterCon
 			m.cfg.Save()
 		}
 	}
+
+	if m.cfg.GetNodeConfiguration(nodeID).Introducer {
+		// This node is an introducer. Go through the announced lists of repos
+		// and nodes and add nodes that we are missing.
+		for _, repo := range config.Repositories {
+			for _, node := range repo.Nodes {
+				var id protocol.NodeID
+				copy(id[:], node.ID)
+				if _, ok := m.nodeRepos[id]; !ok {
+					l.Infof("Adding node %v (vouched for by introducer %v)", id, nodeID)
+					// Add node
+				}
+			}
+		}
+	}
 }
 
 // Close removes the peer from the model and closes the underlying connection if possible.
